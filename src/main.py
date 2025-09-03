@@ -8,7 +8,7 @@ from time import sleep
 
 
 DB_PATH = "data/ebai.db"
-QUERY = "https://www.kleinanzeigen.de/s-fahrraeder/damen,herren/boeblingen/anzeige:angebote/preis::0/fahrrad/k0c217l8782r20+fahrraeder.art_s:(damen%2Cherren)+fahrraeder.type_s:(city%2Cmountainbike)"
+QUERY = "https://www.kleinanzeigen.de/s-fahrraeder/damen,herren/boeblingen/anzeige:angebote/preis::0/fahrrad/k0c217l8782r20+fahrraeder.art_s:(damen%2Cherren)+fahrraeder.type_s:(city%2Cebike%2Cmountainbike)"
 
 
 def main():
