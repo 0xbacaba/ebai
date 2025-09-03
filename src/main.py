@@ -3,7 +3,9 @@ import requests
 import scraper
 import db
 import os
+import sys
 from python_ntfy import NtfyClient
+from time import sleep
 
 
 DB_PATH = "data/ebai.db"
@@ -20,6 +22,18 @@ def main():
 
     db.setup_db(DB_PATH)
 
+    delay = 60
+    if len(sys.argv) == 2:
+        delay = float(sys.argv[1])
+
+    while True:
+        run()
+        if delay == 0:
+            break
+        sleep(delay)
+
+
+def run():
     scraped = scraper.scrape_articles(requests.get(QUERY).content)
     scraped_ids = [id for (id, _) in scraped]
     stored_ids = [id for (id, _) in db.get_ads()]
