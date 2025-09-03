@@ -20,6 +20,7 @@ def main():
     require_env("NTFY_TOPIC")
 
     db.setup_db(DB_PATH)
+    ntfy.init()
 
     delay = 60
     if len(sys.argv) == 2:
@@ -36,22 +37,23 @@ def run():
     scraped = scraper.scrape_articles(QUERY)
     if scraped is None:
         return
-    scraped_ids = [id for (id, _) in scraped]
     stored_ids = [id for (id, _) in db.get_ads()]
 
-    new_article_count = 0
-    for scraped_id in scraped_ids:
+    new_articles = []
+    for (scraped_id, scraped_name) in scraped:
         if scraped_id not in stored_ids:
             print(f"new article: {scraped_id}")
-            new_article_count += 1
+            new_articles.append((scraped_id, scraped_name))
 
     db.clear()
     for (id, name) in scraped:
         db.insert_ad(id, name)
 
+    new_article_count = len(new_articles)
     print(f"{new_article_count} new article(s)")
     if new_article_count > 0:
-        ntfy.send(f"{new_article_count} neue{('r' if new_article_count == 1 else '')} Artikel")
+        new_names = '\n'.join(name for (_, name) in new_articles)
+        ntfy.send(f"{new_article_count} neue{('r' if new_article_count == 1 else '')} Artikel", new_names)
 
 
 def require_env(envvar):

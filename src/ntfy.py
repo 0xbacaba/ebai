@@ -10,9 +10,9 @@ def init():
     c = NtfyClient(server=os.getenv("NTFY_SERVER"), topic=os.getenv("NTFY_TOPIC"), auth=(os.getenv("NTFY_USER"), os.getenv("NTFY_PASS")))
 
 
-def send(msg):
+def send(title, msg=None):
     try:
-        c.send(msg)
+        c.send(message=msg, title=title)
     except MessageSendError as e:
         err_id = EbaiException.NtfyException
         if db.has_error(err_id):
