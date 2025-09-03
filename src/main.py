@@ -1,10 +1,9 @@
-import dotenv
-import requests
 import scraper
 import db
+import ntfy
+import dotenv
 import os
 import sys
-from python_ntfy import NtfyClient
 from time import sleep
 
 
@@ -34,7 +33,9 @@ def main():
 
 
 def run():
-    scraped = scraper.scrape_articles(requests.get(QUERY).content)
+    scraped = scraper.scrape_articles(QUERY)
+    if scraped is None:
+        return
     scraped_ids = [id for (id, _) in scraped]
     stored_ids = [id for (id, _) in db.get_ads()]
 
@@ -50,8 +51,7 @@ def run():
 
     print(f"{new_article_count} new article(s)")
     if new_article_count > 0:
-        c = NtfyClient(server=os.getenv("NTFY_SERVER"), topic=os.getenv("NTFY_TOPIC"), auth=(os.getenv("NTFY_USER"), os.getenv("NTFY_PASS")))
-        c.send(f"{new_article_count} neue{('r' if new_article_count == 1 else '')} Artikel")
+        ntfy.send(f"{new_article_count} neue{('r' if new_article_count == 1 else '')} Artikel")
 
 
 def require_env(envvar):
